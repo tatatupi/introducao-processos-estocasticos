@@ -1,0 +1,377 @@
+---
+title: "Lista de Exercicios IPE#6"
+author: "Taiguara Melo Tupinambas"
+date: 'Entrega: 12 de julho de 2017'
+output:
+  pdf_document:
+    fig_caption: yes
+    fig_height: 8
+    fig_width: 6
+  html_document:
+    fig_caption: yes
+    fig_height: 4
+    fig_width: 6
+---
+
+
+# Capítulo 21 - Poisson
+
+## Exercício 21.1
+
+\begin{gather} 
+        P_k(t)=P\big[N(t)=k\big]
+\end{gather}
+
+Como as únicas possibilidades se ter $k$ chegadas até o tempo $t$ são:
+
+- $k$ chegadas no intervalo $[0,t-\Delta t]$ e nenhuma no intervalo $(t-\Delta t,t]$;
+- $k-1$ chegadas no intervalo $[0,t-\Delta t]$ e uma chegada no intervalo $(t-\Delta t,t]$;
+
+Temos que:
+\begin{gather}
+        P\big[N(t)=k\big]=P\big[N(t-\Delta t)=k-1,N(t)-N(t-\Delta t)=1\big]+P\big[N(t-\Delta t)=k,N(t)-N(t-\Delta t)=0\big]
+\end{gather}
+Por independência (3) e estacionariedade (4) dos incrementos:
+
+\begin{gather}
+        P\big[N(t)=k\big]=P\big[N(t-\Delta t)=k-1\big]P\big[N(t)-N(t-\Delta t)=1\big]+P\big[N(t-\Delta t)=k\big]P\big[N(t)-N(t-\Delta t)=0\big]\\
+        P\big[N(t)=k\big]=P\big[N(t-\Delta t)=k-1\big]P\big[N(t+\Delta t)-N(t)=1\big]+P\big[N(t-\Delta t)=k\big]P\big[N(t+\Delta t)-N(t)=0\big]
+\end{gather}
+
+        
+Substituindo:
+
+- $P\big[N(t-\Delta t)=k-1\big]=P_{k-1}(t-\Delta t)$;
+- $P\big[N(t-\Delta t)=k\big]=P_{k}(t-\Delta t)$;
+- $P\big[N(t+\Delta t)-N(t)=1\big]=\lambda \Delta t$;
+- $P\big[N(t+\Delta t)-N(t)=0\big]=1-\lambda \Delta t$.
+
+Temos que:
+
+\begin{gather}
+        P_k(t)=P_{k-1}(t-\Delta t)\lambda \Delta t + P_k(t-\Delta t)(1-\lambda \Delta t) \\
+        P_k(t)-P_k(t-\Delta t) = P_{k-1}(t-\Delta t)\lambda \Delta t - P_k(t-\Delta t)\lambda \Delta t \\
+        \frac{P_k(t)-P_k(t-\Delta t)}{\Delta t}=P_{k-1}(t-\Delta t)\lambda - P_k(t-\Delta t)\lambda
+\end{gather}
+
+Com $\Delta t \rightarrow 0$:
+
+\begin{gather}
+        \frac{dP_k(t)}{dt}=P_{k-1}(t)\lambda - P_k(t)\lambda \\
+        \frac{dP_k(t)}{dt}+P_k(t)\lambda=P_{k-1}(t)\lambda
+\end{gather}
+
+C.Q.D.
+
+## Exercício 21.2
+
+Fazendo a transformada de Laplacace da Eq. 21.3:
+
+\begin{gather}
+        sP_k(s)-P_k(0^+)+\lambda P_k(s) = \lambda P_{k-1}(s)
+\end{gather}
+
+Mas, $P_k(0^+)=P\big[N(0^+)=k]=N(0)$
+
+Como $N(0)=0$:
+
+\begin{gather}
+        sP_k(s)+\lambda P_k(s) = \lambda P_{k-1}(s)\\
+        P_k(s)=\frac{\lambda}{\lambda + s}P_{k-1}(s)
+\end{gather}
+
+Resolvendo recursivamente, temos que:
+
+\begin{gather}
+        P_k(s)=\Bigg(\frac{\lambda}{\lambda + s}\Bigg)^k P_{0}(s)
+\end{gather}
+
+Resolvendo para $P_0(s)$:
+
+\begin{gather}
+        P_0(s)=L\{P_0(t)\}=L\{e^{\lambda t}u(t)\}=\frac{1}{s+\lambda}
+\end{gather}
+
+Logo:
+
+\begin{gather}
+        P_k(s)=\frac{\lambda^k}{\big(\lambda + s\big)^{k+1}}
+\end{gather}
+
+E, pela tabela de transformadas:
+
+\begin{gather}
+        P_k(t)=e^{-\lambda t}\frac{(\lambda t)^k}{k!}
+\end{gather}para k=0,1,2,...
+
+
+## Exercício 21.6
+
+A probabilidade de haver mais de 12 ligações no primeiro minuto é:
+
+\begin{gather}
+        P\big[N(60)>12\big]=1-P\big[N(60)\leq 12\big]\\
+        P\big[N(60)>12\big]=1-\sum_{k=0}^{12}e^{-\lambda t}\frac{(\lambda t)^k}{k!}
+\end{gather}
+
+Para $\lambda=\frac{1}{5}$ e $t=60$:
+
+\begin{gather}
+        P\big[N(60)>12\big]=1-e^{-12}\sum_{k=0}^{12}\frac{12^k}{k!}
+\end{gather}
+
+
+```{r 216}
+x<-0;
+for (i in 0:12) {
+    x<-x+(12^i)/factorial(i)    
+}
+
+Ans<-1-exp(-12)*x
+
+cat("Resposta:", Ans)
+```
+
+## Exercício 21.8
+
+\begin{gather}
+        P\big[T>t\big]=P\big[min(T_1^{(1)},T_1^{(2)})\big]=P\big[T_1^{(1)}>t,T_1^{(2)}>t\big]
+\end{gather}
+
+Por independência:
+
+\begin{gather}
+        P\big[T>t\big]=P\big[T_1^{(1)}>t\big]P\big[T_1^{(2)}>t\big]=P^2\big[T_1>t\big]\\\\
+        P\big[T>t\big]=\Bigg(\int_t^\infty \lambda e^{-\lambda x}dx\Bigg)^2=e^{-2\lambda t}
+\end{gather}
+
+Mas, $P\big[T>t\big]=1-F_T(t)$, logo:
+
+\begin{gather}
+        p_T(t)=\frac{d\big(1-e^{-2\lambda t}\big)}{dt}=2\lambda e^{-2\lambda t}
+\end{gather}
+
+
+## Exercício 21.9
+
+Seja $N_s(t)=N_1(t)+N_2(t)$, com $N_s(0)=N_1(0)+N_2(0)=0$.
+
+Os incrementos de $t_4>t_3$ e $t_2>t_1$ são dados por:
+
+\begin{gather}
+        N_s(t_2)-N_s(t_1)=\big(N_1(t_2)-N_1(t_1)\big)+\big(N_2(t_2)-N_2(t_1)\big)\\
+        N_s(t_4)-N_s(t_3)=\big(N_1(t_4)-N_1(t_3)\big)+\big(N_2(t_4)-N_2(t_3)\big)
+\end{gather}
+
+Se $N_1(t)$ e $N_2(t)$ são processos de *Poisson* independentes, então cada termo das equações acima também são independentes entre si e a a soma da primeira equação é independente da soma da segunda equanção (os incrementos de $N_s$ são estacionários).
+
+Utilizando a função característica de $N_s$, temos:
+
+\begin{gather}
+        \Phi_{N_s}(\omega)=\Phi_{N_1}(\omega)\Phi_{N_2}(\omega)\\
+        \Phi_{N_s}(\omega)=e^{\lambda_1 t (e^{j\omega}-1)}e^{\lambda_2 t (e^{j\omega}-1)}=e^{(\lambda_1 +\lambda_2)t (e^{j\omega}-1)}
+\end{gather}
+
+Logo, $N_s(t)$~Poiss($(\lambda_1+\lambda_2)t$)
+
+
+## Exercício 21.10
+
+Valor esperado:
+
+\begin{gather}
+        E\big[N(t_2)-N(t_1)\big]=\lambda t_2 - \lambda t_1=\lambda (t_2-t_1)
+\end{gather}
+
+Para variância, utiliza-se do fato de que os incrementos são estacionários e a tabela de VAs para Poisson:
+
+\begin{gather}
+        var\big(N(t_2)-N(t_1)\big)=var\big(N(t_2-t_1)\big)=\lambda (t_2-t_1)
+\end{gather}
+
+
+## Exercício 21.16
+
+Temos que $P\big[t-\Delta t \leq T_k \leq t \big]$ é igual a $P\big[(k-1)$ chegadas em $[0,t-\Delta t]$ $\cup$ uma chegada em $(t-\Delta t,t]\big]$.
+
+Logo:
+
+
+\begin{gather}
+        P\big[t-\Delta t \leq T_k \leq t \big]=e^{-\lambda(t-\Delta t)}\frac{(\lambda(t-\Delta t))^{k-1}}{(k-1)!}\lambda \Delta t
+\end{gather}
+
+\begin{gather}
+        \frac{P\big[t-\Delta t \leq T_k \leq t \big]}{\Delta t}=e^{-\lambda(t-\Delta t)}\frac{(\lambda(t-\Delta t))^{k-1}}{(k-1)!}\lambda
+\end{gather}
+
+Com $\Delta t \rightarrow 0$:
+
+\begin{gather}
+        \lim_{\Delta t \rightarrow 0} \frac{P\big[t-\Delta t \leq T_k \leq t \big]}{\Delta t}=e^{-\lambda t}\frac{(\lambda t)^{k-1}}{(k-1)!}\lambda=\frac{\lambda^k}{(k-1)!}t^{k-1}e^{-\lambda t}
+\end{gather}
+
+# Capítulo 22 - Markov
+
+## Exercício 22.15
+
+Os estados são: $[0, 1, 2, 3]$ e suas transições:
+
+- $P_{00}=1$, $P_{01}=0$, $P_{02}=0$, $P_{03}=0$
+
+- $P_{10}=\frac{1}{2}$, $P_{11}=\frac{1}{2}$, $P_{12}=0$, $P_{13}=0$
+
+- $P_{20}=\frac{1}{4}$, $P_{21}=\frac{1}{2}$, $P_{22}=\frac{1}{4}$, $P_{23}=0$
+
+- $P_{30}=\frac{1}{8}$, $P_{31}=\frac{3}{8}$, $P_{32}=\frac{3}{8}$, $P_{33}=\frac{1}{8}$
+
+
+Temos, então, a matriz de transição da seguinte forma:
+
+$$P=\left[\begin{array}
+{rrrr}
+1 & 0 & 0 & 0 \\
+\frac{1}{2} & \frac{1}{2} & 0 & 0 \\
+\frac{1}{4} & \frac{1}{2} & \frac{1}{4} & 0 \\
+\frac{1}{8} & \frac{3}{8} & \frac{3}{8} & \frac{1}{8}
+\end{array}\right]
+$$
+```{r 2215}
+P<-matrix(c(1,0,0,0, 
+            1/2,1/2,0,0, 
+            1/4,1/2,1/4,0, 
+            1/8,3/8,3/8,1/8),
+          nrow=4,ncol=4,byrow=TRUE)
+
+for (i in 1:15) {
+    P<-P%*%P
+}
+
+cat("P infinito:\n")
+print(P)
+```
+
+Para qualquer que seja o $\pi_0$, as probabilidades estacionárias serão: $\pi=[1,0,0,0]^T$. Ou seja, a probabilidade de todas as lâmpadas falharem (estado 0) chega a 100%.
+
+## Exercício 22.17
+
+Pelo teorema de *Perron-Frobenius*, sabe-se que a matriz $P^n$ tem um autovalor $\lambda_1=1$ e os outros autovalores com módulo menor do que 1.
+
+Dessa forma, considerando $\bf P^n=V\wedge^n V^{-1}$, em que $\bf V = [v_1 \ v_2\  v_3]$ e $\bf V^{-1}=[w_1 \ w_2 \ w_3]$, teremos que $\bf P^n \rightarrow v_1w_1^T$.
+
+Como $\bf P^\infty 1=1$, logo: $\bf v_1w_1^T 1 =1$. 
+
+Mas, $\bf w_1^T1$ é um escalar (k). Fazendo $k=\frac{1}{c}$, temos que: $\bf v_1w_1^T 1=v_1\frac{1}{c}=1 \rightarrow v_1=c1$.
+
+Sabemos, também, que $\bf \pi^Tv_1w_1^T=\pi^T$ e que $\bf \pi^Tv_1$ também é um escalar (k). Fazendo $k=\frac{1}{d}$, teemos que:$\bf \pi v_1w_1^T=\frac{1}{d}w_1^T=\pi^T \rightarrow w_1=d\pi^T$.
+
+Logo, sabendo que $\bf \pi^T1=1$:
+
+\begin{gather}
+        \bf w_1^Tv_1=(d\pi)^Tc1=1\\
+        \bf \pi^T1cd=1\\
+        \bf cd=1 \\
+        \bf P^\infty = 1\pi^T
+\end{gather}
+
+C.Q.D.
+
+## Exercício 22.18
+
+```{r 2218}
+
+P<-matrix(c(0.1,0.4,0.5, 
+            0.2,0.5,0.3, 
+            0.3,0.3,0.4),
+          nrow=3,ncol=3,byrow=TRUE)
+
+for (i in 1:100) {
+    P<-P%*%P
+    P<-round(P,digits=4)
+}
+
+cat("P^100:\n")
+print(P)
+```
+
+O resultado está de acordo com a teoria, uma vez que as linhas continuam somando para 1, e, com $n \rightarrow \infty$, as linhas de $P^n$ serão iguais.
+
+## Exercício 22.24
+
+```{r 2224}
+
+P<-matrix(c(6/8,1/8,1/8, 
+            5/8,2/8,1/8, 
+            4/8,3/8,1/8),
+          nrow=3,ncol=3,byrow=TRUE)
+
+for (i in 1:100) {
+    P<-P%*%P
+    P<-round(P,digits=4)
+}
+
+cat("P^100:\n")
+print(P)
+```
+
+No caso do Exemplo 22.8, a matriz de transição era do tipo *doubly stochastic matrix*, já que, além das linhas somarem 1, as colunas também, o que resulta em probabilidades estacionárias iguais. Nesse caso, temos como probabilidade estacionária: $\pi=[0.6964\ \ \ 0.1786 \ \ 0.1250]^T$
+
+## Exercício 22.26
+
+Para montar a Matrix de Transição, foi feito um código em R, considerando que a primeira linha (dia 0) é igual a $[1\ \ 0\ \ 0\ \ 0\ \ 0]$.
+
+Para os outros dias, foi considerada uma PMF binomial, com $P[n]=\left(\begin{array} {r} k \\ n \end{array}\right) \bigg(\frac{1}{2}\bigg)^n\bigg(1-\frac{1}{2}\bigg)^{k-n}$
+
+
+```{r 2226}
+p<-1/2
+P<-matrix(0,5,5)
+P[1,]<-c(1,0,0,0,0)
+
+for (k in 1:4) {
+        for (n in 0:k) {
+                P[k+1,n+1]<-ncol(combn(k,n))*p^n*(1-p)^(k-n)
+        }
+}
+
+cat("P:\n")
+print(P)
+```
+        
+Considerando que os estados são as quantidades de peixes (k=0,1,2,3,4) presentes no poço, deseja-se encontrar quando o estado 0 terá mais do que 90% de probabilidade.
+
+Dessa forma:
+
+```{r 2226b}
+pi<-c(0,0,0,0,1)
+n<-0
+while (pi[1]<0.9) {
+        pi<-pi%*%P
+        n<-n+1
+}
+
+cat("O pescador deve planejar pescar por",n,
+    "dias")
+
+```
+
+
+## Exercício 22.27
+
+Temos que $\bf P^T1=1$. Logo:
+
+\begin{gather}
+        \bf P^T(P^T1)=P^{T^2}1\\
+        \bf P^T(P^T1)=P^{T}1\\
+        \bf P^{T^2}=P^T \\
+        \bf P^{\infty^T}1 = 1
+\end{gather}
+
+Pelo problema 22.17, temos que : $\bf P^\infty = 1\pi^T$. Logo:
+
+\begin{gather}
+        \bf P^\infty1 = \big(1\pi^T\big)^T1=1\\
+        \bf \pi 1^T1=1\\
+\end{gather}
+
+Mas, como $\bf 1^t1=k$ sendo k um escalar constante, temos que: $\bf \pi=\frac{1}{k}$, como queríamos demonstrar.

@@ -1,0 +1,208 @@
+---
+title: 'Lista de Exercícios IPE #4a'
+author: "Taiguara Melo Tupinambás"
+date: 'Entrega: 24 de maio de 2017'
+output:
+  pdf_document: default
+  html_document: default
+---
+
+# Exercício 1
+
+Para provar a convergência em distribuição, vamos analisar a CDF das VA's $X_n$ e $X$:
+
+Para $x<0$, ou seja a probabilidade de $X_n$ ou $X$ assumir valores menores do que 0 é nula:
+
+- $P(X_n \leq x)=0$
+- $P(X \leq x)=0$
+
+
+Para $0\leq x<1$, ou seja a probabilidade de $X_n$ ou $X$ assumir valor menor do que 1 é igual a probabilidade de assumir o valor 0 ($\omega_3$ e $\omega_4$ para $X_n$ e $\omega_1$ e $\omega_2$ para $X$)
+
+- $P(X_n\leq x)=P(X_n=0)=\frac{1}{2}$
+- $P(X \leq x)=P(X=0)=\frac{1}{2}$
+
+
+Para $x>1$, ou seja a probabilidade de $X_n$ ou $X$ assumir valor menor do que 1 é igual a probabilidade de assumir o valor 0 + a probabilidade de assumir o valor 1 $P(\Omega)$
+
+
+- $P(X_n\leq x)=P(X_n=0)+P(X_n=1)=1$
+- $P(X \leq x)=P(X=0)+P(X=1)=1$
+
+
+Ou seja:
+
+$$F_{X_n}(x)=F_X(x)=\begin{cases} 
+        0,\qquad \ se \ x<0\\
+        \frac{1}{2},\qquad se  \ 0\leq x<1\\
+        1,\qquad \ se  \ x \geq 1
+\end{cases}$$
+
+O que mostra que, em distribuição, há igualdade entre $X_n$ e $X$ para todo $n$.
+
+        Para provar que as VA's $X_n$ e $X$ não convertem em probabilidade, é necessário checar se:
+
+\begin{gather} 
+        \lim_{n\to\infty} P(|X_n-X|\geq \epsilon)=0
+\end{gather}
+
+
+Sabemos, no entanto, que $|X_n-X|=1$, para qualquer $\omega_n$, $n=1,2,3 \ e \ 4$.
+
+Desta forma, se escolhermos qualquer valor de $\epsilon<1$, teremos:
+
+\begin{gather} 
+        \lim_{n\to\infty} P(|X_n-X|\geq \epsilon)=1
+\end{gather}
+
+O que prova a não convergência em probabilidade, c.q.d..
+
+
+# Exercício 2
+
+As variáveis aleatórias $X_n$ assumem os seguintes valores, com as devidas probabilidades:
+
+
+$$X_n -> \begin{cases} 
+        2^n,\qquad \ \ \ P(X_n) = 2^{-n-1}\\
+        -2^n,\qquad P(X_n) = 2^{-n-1}\\
+        1,\qquad \ \ \ \ P(X_n) = \frac{1}{2}(1-2^{-n})\\
+        -1,\qquad \  P(X_n) = \frac{1}{2}(1-2^{-n})
+\end{cases}$$
+
+Sua função característica $\Phi(\omega)$ é dada por:
+
+\begin{gather} 
+        \Phi(\omega)=E[e^{j\omega X_n}] \\
+        \Phi(\omega)=e^{j\omega2^n}2^{-n-1}+e^{-j\omega2^n}2^{-n-1}+\frac{1}{2}(1-2^-n)(e^j\omega+e^-j\omega)\\
+        \Phi(\omega)=2^{-n}(\frac{e^{j\omega2^n}+e^{-j\omega2^n}}{2})+(1-2^{-n})(\frac{e^{j\omega}+e^{-j\omega}}{2})\\
+        \Phi(\omega)=2^{-n}cos(\omega2^n)+(1-2^{-n})cos(\omega)
+\end{gather}
+
+Desta forma, calculando $\frac{1}{\sqrt(n)}\sum_{i=1}^n X_i$ através de sua função característica, toma-se o produtorio de $\Phi(\omega)$ de $i$ a $n$. Para que ela convirja para a distribuição normal de $\mu=0$ e $\sigma=1$, o resultado esperado é $e^{-\frac{\omega^2}{2}}$
+
+Uma forma alternativa de se verificar a convergência é utilizando o teorema do limite central:
+
+\begin{gather} 
+        \frac{S_N - E[S_N]}{\sqrt(var(S_N))}=\frac{\sum_{i=1}^NX_i-NE_X[X]}{\sqrt{Nvar(X)}} \rightarrow N(0,1)
+\end{gather}
+
+Em que $S_N=\sum_{i=1}^NX_i$
+
+Calculando o valor esperado e a  de $X_n$:
+
+\begin{gather} 
+        E[X_n]=2^n2^{-n-1}-2^n2^{-n-1}+\frac{1}{2}(1-2^{-n})(1-1)=0
+\end{gather}
+
+E, como as variáveis são independentes, $var(S_N)=\sum_{i=1}^Nvar(X_i)$. Calculando $var(X_i)$:
+
+\begin{gather} 
+        var[X_n]=2^{n^2}2^{-n-1}+(-2^n)^22^{-n-1}+\frac{1}{2}(1-2^{-n})((1)^2+(-1)^2)\\
+        var[X_n]=2^n-2^{-n}+1
+\end{gather}
+
+Tomando o limite dde $\sum_{i=1}^nvar(X_i)$, com $n\rightarrow \infty$, sobra:
+
+\begin{gather} 
+        var[S_N]=\lim_{n\rightarrow \infty}n
+\end{gather}
+
+Substituindo os valores econtrados para $var[S_N]$ e $E[X_n]$ em (7):
+
+\begin{gather} 
+        \frac{\sum_{i=1}^NX_i-NE_X[X]}{\sqrt{var(S_N)}}=lim_{n\rightarrow                        \infty}{\frac{1}{\sqrt{n}}\sum_{i=1}^n(X_i)} \rightarrow N(0,1)
+\end{gather}
+
+Como queríamos demonstrar.
+
+O resultado teórico foi simulado e a comparação entre o histograma da simulação e a distribuição normal pode ser observado, corroborando a o resultado teórico.
+
+```{r 2}
+
+M<-10000 #número de realizações
+N<-1000 #quantidade de Xn
+
+X<-matrix(nrow = M, ncol = N)
+sum_X<-c(1:M)-c(1:M)
+
+for (i in 1:M)  {
+        for (n in 1:N) {
+                prob1<-2^(-n-1)#prob Xn=+-2^n
+                prob2<-(1/2)*(1-2^(-n)) #prob Xn=1/2(1-2^-n)
+                
+                u<-runif(1) #VA uniforme para realização
+
+                if (u<prob1) {
+                        X[i,n]<-2^n
+                } else if (u<2*prob1) {
+                        X[i,n] <- -(2^n)
+                } else if (u<prob2) {
+                        X[i,n] <- 1 
+                } else {
+                        X[i,n] <- -1
+                }
+        }
+        sum_X[i] <- 1/sqrt(N)*sum(X[i,]) #somatório das realizações
+}
+
+normal<-rnorm(N)
+
+
+hist(sum_X, prob=TRUE, breaks=10000,
+     xlim=c(-4,4),ylim=c(0,0.5),
+     main="Comparação das Distribuições")
+curve(dnorm(x, mean=0, sd=1), add=TRUE)
+
+``` 
+
+
+# Exercício 3
+
+A integral múltipla pode ser interpretada como o cálculo do valor esperado de uma transformação $g(X_1,X_2,...,X_n)$, com $X_n=U(0,1)$, para todo $n$, tal que:
+
+\begin{gather} 
+        g(X_1,X_2,...,X_n)=\frac{X_1^2+X_2^2+...+X_n^2}{X_1+X_2+...+X_N}
+\end{gather}
+
+Desta forma, calculando $E_{X_1,X_2,...,X_n}[g(X_1,X_2,...,X_n)]$, é possível calcular a integral solicitada.
+
+\begin{gather} 
+        E\Bigg[ \frac{\sum_{i=1}^NX_i^2}{\sum_{i=1}^NX_i} \Bigg]=\frac{E\bigg[\sum_{i=1}^NX_i^2\bigg]}{E\bigg[\sum_{i=1}^NX_i\bigg]}=\frac{\sum_{i=1}^NE\big[X_i^2\big]}{\sum_{i=1}^NE\big[X_i\big]}
+\end{gather}
+
+Mas, como pode-se assumir que as variáveis são independentes:
+
+\begin{gather} 
+        \frac{nE\big[X^2\big]}{nE\big[X\big]}=\frac{var(X)+E^{2}\big[X\big]}{E\big[X\big]}
+\end{gather}
+
+Mas, sabemos que $var(X)=\frac{(b-1)^2}{12}$ e $E\big[X\big]=\frac{b+a}{2}$, para $U(0,1)$, temos que: $var(X)=\frac{1}{12}$ e $E\big[X\big]=\frac{1}{2}$. Logo:
+
+
+\begin{gather} 
+        E_{X_1,X_2,...,X_n}\big[g(X_1,X_2,...,X_n)\big]=\frac{\frac{1}{12}+\frac{1}{4}}{\frac{1}{2}}=\frac{2}{3}
+\end{gather}
+
+Desta forma, o limite da integral múltipla dada é $\frac{2}{3}\approx0.66667$
+
+A simulação encontrou o mesmo valor, conforme script a seguir:
+
+
+```{r ex3}
+
+N<-1000
+limit<-c(1:N)-c(1:N)
+for (i in 1:N) {
+        a<-runif(N)
+        limit[i]<-sum(a^2)/sum(a)
+}
+
+x<-sum(limit)/N
+
+print(x)
+
+``` 
+
+
+

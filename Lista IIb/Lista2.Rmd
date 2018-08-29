@@ -1,0 +1,49 @@
+---
+title: 'Lista de Exercícios IPE #2 Complemento'
+author: "Taiguara Melo Tupinambás"
+date: 'Entrega: 18 de abril de 2017'
+output:
+  html_document: default
+  pdf_document: default
+---
+
+# Exercício 1
+
+Uma vez que os eventos são independentes e a probabilidade de $A_n$ dada por $P(A_n)>0, \forall A_n \geq 1$, temos que:
+
+\begin{gather*}
+        \displaystyle\sum_{n=1}^{\infty} P(A_n) = \infty
+\end{gather*}
+
+Logo, pelo lema de Borel-Cantelli, P(lim sup $\small A_N$) = 1.
+
+Desta forma, a probabilidade de ocorrência de um número infinito dos $A_n$'s é igual a 100%.
+
+Utilizando simulação, vemos que a ocorrência de lançamentos n iniciando com uma série de exatamente 3 caras cresce a medida que o número de lançamentos aumenta na mesma proporção. Logo, se o número de lançamentos tende ao infinito, espera-se que a ocorrência de $A_n$'s também tende a infinito.
+
+
+```{r ex1, echo=TRUE}
+N=c(100,1000,10000,100000)
+a<-round(runif(N,0,1))
+an<-c(0,0,0,0)
+
+for (i in 1:4) {
+        lanc<-round(runif(N[i],0,1))
+        for (j in 3:N[i]) {
+                if (lanc[j]==1&lanc[j-1]==1&lanc[j-2]==1) {
+                        an[i]<-an[i]+1  
+                }
+        }
+}
+```
+
+
+```{r echo=TRUE}
+
+for (i in 1:4) {
+   cat("A quantidade de ocorrências de An para", as.character(N[i]), "lançamentos é de ",an[i],"\n")     
+}
+
+
+```
+

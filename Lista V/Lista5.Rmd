@@ -1,0 +1,153 @@
+---
+title: "Lista de Exercicios IPE#5"
+author: "Taiguara Melo Tupinambas"
+date: 'Entrega: 23 de junho de 2017'
+output:
+  pdf_document:
+    fig_caption: yes
+    fig_height: 8
+    fig_width: 6
+  html_document:
+    fig_caption: yes
+    fig_height: 4
+    fig_width: 6
+---
+
+# Exercício 1
+
+A distribuição uniforme para o intervalo fechado, dado um parâmetro $\theta$ é descrita por:
+
+$$f(x|\theta)=\begin{cases} 
+        \frac{1}{\theta}, \ \  0\leq x \leq \theta\\
+        0, \ \ caso \ contrário
+\end{cases}$$
+        
+A função de verossimilhança é calculada pelo produtório da probabilidade, $L(\theta|X)=\prod_1^n \frac{1}{\theta}$ e é descrito por:
+
+$$L(\theta|X_{x_i:x_n})=\begin{cases} 
+        \frac{1}{\theta^n}, \ \  0\leq x_i \leq \theta\\
+        0, \ \ caso \ contrário
+\end{cases}$$
+
+O estimador será dado pela maximização da função de verossimilhança. 
+Nota-se que, para valores de $x_i\leq\theta$ a função é monotonicamente decrescente. Desta forma, a estimativa que maximiza essa função é o menor valor de $\theta\geq x_i$. Ou seja, o estimador de MV será o valor máximo das amostras $X_1,...,X_n$.
+
+\begin{gather} 
+        \hat \theta_{MV}=max(X_n)
+\end{gather}
+
+O estimador de $\theta$ pelo Método dos Momentos da função uniforme é dado por:
+
+\begin{gather} 
+        E[X]=\frac{\theta}{2}\\
+        \hat \theta_{MM}=\frac{2}{n}\sum_nx_i
+\end{gather}
+
+
+Simulando para um $\theta=3$, temos que ambos estimadores convergem a medida que a quantidade de amostras aumenta
+
+```{r 1b}
+
+set.seed(1)
+
+theta<-3
+N<-1000
+
+Theta_MV<-numeric(N)
+Theta_MM<-numeric(N)
+
+for (j in 1:N) {
+        x<-runif(j,max=theta)
+
+        # Máxima Verossimilhança
+        Theta_MV[j]<-max(x)
+
+        # Método dos Momentos
+        Theta_MM[j]<-2*mean(x)
+}
+
+par(mfrow=c(2,1))
+
+plot(Theta_MV,type="l",ylab="Theta Estimado",xlab="N",main="Máxima Verossimilhança")
+abline(h=theta)
+plot(Theta_MM,type="l",ylab="Theta Estimado",,xlab="N",main="Método dos Momentos")
+abline(h=theta)
+
+```
+
+
+# Exercício 2
+
+O estimador de $\theta$ pelo Método dos Momentos é a mesma do exercício 1, pois abrindo o intervalo não muda o valor esperado da pdf
+
+Porém, a função de verossimilhança para o intervalo aberto é descrita por:
+
+$$L(\theta|X_{x_i:x_n})=\begin{cases} 
+        \frac{1}{\theta^n}, \ \  0 < x_i < \theta\\
+        0, \ \ caso \ contrário
+\end{cases}$$
+
+Neste caso, para valores de $x_i<\theta$ a função é monotonicamente decrescente e o estimador seria dado pelo menor valor de $\theta>x_i$. Como não há nenhum valor possível de $x_i$ que se iguala a $\theta$, o estimador é indefinido. 
+
+
+# Exercício 3
+
+Como o intervalo da distribuição uniforme tem largura 1, a função de verossimilhança, dessa vez, é dada por:
+
+$$L(\theta|X_{x_i:x_n})=\begin{cases} 
+        1, \ \ \theta <  x_i <\theta+1\\
+        0, \ \ caso \ contrário
+\end{cases}$$
+
+
+E seu valor máximo é 1, que ocorre quando $\theta < x_i < \theta+1$, ou, fazendo modificaçÕes, $x_i-1 < \theta < x_i$ Logo, o estimador $\hat \theta_{MV}$ estaria entre $max(x_{i:n}) +1 < \theta < max(x_{i:n})$. 
+Como o intervalo é aberto, não há valores de $x_i$ que se igualam a $\theta$ e o estimador é indefinido. Caso o intervalo fosse fechado, porém, para uma quantidade infinita de amostras, o intervalo definido para $\theta$ convergiria para um ponto apenas, sendo ele o próprio $\theta$. O estimador seria então definido por:
+
+\begin{gather} 
+        \hat \theta_{MV_1}=min(X_n); ou\\
+        \hat \theta_{MV_2}=max(X_n)-1;
+\end{gather}
+
+O estimador de $\theta$ pelo Método dos Momentos da função uniforme é dado por:
+
+\begin{gather} 
+        E[X]=\frac{2\theta+1}{2}\\
+        \hat \theta_{MM}=\frac{2\frac{\sum_1^n{x_i}}{n}-1}{2}
+\end{gather}
+
+Simulando para um $\theta=3$, temos que ambos estimadores (caso o intervalo fosse fechado) convergem a medida que a quantidade de amostras aumenta.
+
+```{r 3}
+
+set.seed(1)
+
+theta<-3
+N<-1000
+
+Theta_MV1<-numeric(N)
+Theta_MV2<-numeric(N)
+Theta_MM<-numeric(N)
+
+for (j in 1:N) {
+        x<-runif(j,min=theta,max=theta+1)
+
+        # Máxima Verossimilhança
+        Theta_MV1[j]<-min(x)
+        Theta_MV2[j]<-max(x)-1
+
+
+        # Método dos Momentos
+        Theta_MM[j]<-(2*mean(x)-1)/2
+}
+
+par(mfrow=c(3,1))
+
+plot(Theta_MV1,type="l",ylab="Theta Estimado",xlab="N",main="Máxima Verossimilhança 1")
+abline(h=theta)
+plot(Theta_MV2,type="l",ylab="Theta Estimado",xlab="N",main="Máxima Verossimilhança 2")
+abline(h=theta)
+plot(Theta_MM,type="l",ylab="Theta Estimado",,xlab="N",main="Método dos Momentos")
+abline(h=theta)
+
+```
+

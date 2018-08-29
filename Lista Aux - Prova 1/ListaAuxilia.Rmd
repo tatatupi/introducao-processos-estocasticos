@@ -1,0 +1,36 @@
+---
+title: 'Lista de Exercícios IPE #Auxiliar'
+author: "Taiguara Melo Tupinambás"
+date: 'Entrega: 9 de Maio de 2017'
+output:
+  html_document: default
+  pdf_document: default
+---
+
+# Exercício 1
+
+Primeiro são calculadas as probabilidades de A, B e C, somando os intervalos das uniões, já que são mutualmente exclusivos:
+
+\begin{gather} 
+        \small P(A)=\frac{1}{2}\\
+        \small P(B)=\frac{1}{4}+\frac{1}{4}=\frac{1}{2}\\
+        \small P(C)=\frac{1}{8}+\frac{1}{8}+\frac{1}{8}+\frac{1}{8}=\frac{1}{2}\\
+\end{gather}
+
+Em seguida, são investigadas as independências dois a dois e três a três:
+
+\begin{gather} 
+        \small P(A{\cap}B)=P([0,\frac{1}{4}))=\frac{1}{4}=P(A)P(B)\\
+        \small P(A{\cap}C)=P([0,\frac{1}{8}){\cup}[\frac{1}{4},\frac{3}{8}))=\frac{1}{4}=P(A)P(C)\\
+        \small P(A{\cap}C)=P([0,\frac{1}{8}){\cup}[\frac{1}{2},\frac{5}{8}))=\frac{1}{4}=P(B)P(C)\\
+        \small P(A{\cap}C{\cap}C)=P([0,\frac{1}{8}))=\frac{1}{8}=P(A)P(B)P(C)
+\end{gather}
+
+Como eles são independentes 2 a 2 e 3 a 3, os eventos A, B e C são mutualmente independentes.
+
+
+
+```{r echo=TRUE, warning=FALSE}
+
+
+```

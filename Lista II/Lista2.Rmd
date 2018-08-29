@@ -1,0 +1,18 @@
+---
+title: 'Lista de Exerc?cios IPE #2'
+author: "Taiguara Melo Tupinamb?s"
+date: 'Entrega: 11 de abril de 2017'
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+As 43a se??es, equa??es, figuras, exemplos e exerc?cios s?o do livro *Intuitive Probability and Random Processes using MATLAB* de Stephen M. Kay, Springer, 2006.
+
+\begin{cases} 
+        H_0: \mu = \mu_e \\ H_1: \mu\neq\mu_e
+\end{cases}

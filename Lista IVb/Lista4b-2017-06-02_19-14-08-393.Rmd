@@ -1,0 +1,123 @@
+---
+title: "title"
+author: "Taiguara Melo TupinambÃ¡s"
+date: 'Entrega: 06 de maio de 2017'
+output:
+  html_document: default
+  pdf_document: default
+---
+
+## Exercício 4
+
+#15.5
+
+\begin{gather} 
+        X_N=X_{N-1}+U_N\\
+        X_N=U_1+U_2+...+U_N\\
+        X_N=\sum_{i=1}^{N}U_i\\
+\end{gather}
+
+Para avaliar a convergência, podemos analisar a desigualdade de Chebyshev:
+
+\begin{gather} 
+        P[|\bar{X}_N-E_X[X]|>\epsilon]\leq \frac{var(\bar{X}_N)}{\epsilon^2}
+\end{gather}
+
+Mas, como:
+
+\begin{gather} 
+        var(\bar{X}_N)=\sum_{i=1}^{N}var(U_i)=\sum_{i=1}^{N}\frac{(1+1)^2}{12}=\sum_{i=1}^{N}\frac{1}{3}\\
+        \\
+        \lim_{N \rightarrow \infty}var(\bar{X}_N) \rightarrow \infty
+\end{gather}
+
+$X_N$ não irá convergir.
+        
+#15.6
+
+Considerando que as variáveis $X_i$ para $i=1,2..,N$ são independentes e idênticamente distribuídas, temos que:
+
+\begin{gather} 
+        X_N=\frac{1}{N}\sum_{i=1}^NX_i^2\\
+        E_X[X_N^2]=\frac{1}{N}\sum_{i=1}^NE_X[X^2]=E_X[X^2]\\
+        \\
+        var(X_N^2)=E_X[X^4]-E_X^2[X^2]
+\end{gather}
+
+Considerando que $E_X[X_N^2]$ existe, para que o estimador convirja, é necessário que $var(X_N^2)<\infty$
+
+
+#15.7
+
+\begin{gather} 
+        X_N=\frac{1}{\sqrt{N}}\sum_{i=1}^NX_i\\
+        \\
+        var(X_N)=var(\frac{1}{\sqrt{N}}\sum_{i=1}^NX_i)=\frac{1}{N}var(\sum_{i=1}^NX_i)=var(X)
+\end{gather}
+
+Como $var(X)\neq 0$, para $N\rightarrow \infty$, a variável aleatória não irá convergir
+
+
+#15.8
+
+Temos que:
+
+$$Y_N=\begin{cases} 
+        \frac{X_N}{\sqrt{N}}+1, \ se \ \frac{X_N}{\sqrt{N}}>0.1\\
+        \frac{X_N}{\sqrt{N}},\ se \ \frac{X_N}{\sqrt{N}}\leq 0.1
+\end{cases}$$
+
+Logo:
+
+\begin{gather} 
+        P[|Y_N|>\epsilon]=P[|{\frac{X_N}{\sqrt{N}}+1}|>\epsilon]P[\frac{X_N}{\sqrt{N}}>0.1]+P[|\frac{X_N}{\sqrt{N}}|>\epsilon]P[\frac{X_N}{\sqrt{N}}\leq 0.1]\\
+        P[|Y_N|>\epsilon]=(1-P[-\epsilon <{\frac{X_N}{\sqrt{N}}+1}<\epsilon])P[\frac{X_N}{\sqrt{N}}>0.1]+(1+P[-\epsilon<\frac{X_N}{\sqrt{N}}<\epsilon])P[\frac{X_N}{\sqrt{N}}\leq 0.1]\\
+\end{gather}
+
+Sabendo que:
+
+\begin{gather} 
+        \frac{X_N}{\sqrt{N}} \sim N(0,\frac{1}{\sqrt{N}})\\
+        \frac{X_N}{\sqrt{N}}+1 \sim N(1,\frac{1}{\sqrt{N}})
+\end{gather}
+
+
+Temos:
+
+\begin{gather} 
+        P[|Y_N|>\epsilon]=(1-[Q(\frac{-\epsilon-1}{\sqrt{\frac{1}{N}}})-Q(\frac{\epsilon-1}{\sqrt{\frac{1}{N}}})])Q(\frac{0.1}{\sqrt{\frac{1}{N}}})+
+                          (1-[Q(\frac{-\epsilon}{\sqrt{\frac{1}{N}}})-Q(\frac{\epsilon}{\sqrt{\frac{1}{N}}})])(1-Q(\frac{0.1}{\sqrt{\frac{1}{N}}}))
+\end{gather}
+
+
+Como $\frac{1}{\sqrt{\frac{1}{N}}}=\sqrt{N}$, quando $N\rightarrow \infty$, ambos os termos tendem a $0$ e, desta forma, $P[|Y_N|>\epsilon] \rightarrow 0$, C.Q.D..
+
+
+```{r 15 8}
+
+N<-200
+R<-4
+
+y<-matrix(0,R,N)
+
+for (j in 1:R) {
+        for (i in 1:N) {
+                x<-rnorm(n=1)/sqrt(i)
+                if (x<0.2) {
+                        y[j,i]<-x
+                } else {
+                        y[j,i]<-x+1
+                }
+        }
+}
+
+plot(c(1:N),type="l",y[1,])
+plot(c(1:N),type="l",y[2,])
+plot(c(1:N),type="l",y[3,])
+plot(c(1:N),type="l",y[4,])
+abline(h=0.2)
+
+``` 
+
+
+

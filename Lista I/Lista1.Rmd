@@ -1,0 +1,510 @@
+---
+title: 'Lista de Exerc?cios IPE #1'
+author: "Taiguara Melo Tupinamb?s"
+date: 'Entrega: 04 de abril de 2017'
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+As refer?ncias a se??es, equa??es, figuras, exemplos e exerc?cios s?o do livro *Intuitive Probability and Random Processes using MATLAB* de Stephen M. Kay, Springer, 2006.
+
+## Exerc?cio 1:  
+
+Foi considerado como "quaisquer duas pessoas da fam?lia estarem em casa simultaneamente" apenas duas pessoas quaisquer. O evento quaisquer tr?s ou as quatro estarem em casa foram descartados.
+
+*Esse entendimento ? semelhante ao que foi considerado na se??o 1.3 do livro, quando ? tratado a probabilidade de 3 pessoas estarem ao telefone, como apenas 3 (o evento 4 pessoas estarem ao telefone n?o fazia parte do c?lculo da probabilidade)*
+
+a) O modelo probabil?stico adotado para solu??o do problema ? dado pela lei binomial de probabilidade, cuja f?rmula ? apresentado em (3.28). O c?lculo da probabilidade ? apresentado a seguir
+
+```{r Exerc?cio 1a}
+
+Pk=factorial(4)/(factorial(4-2)*factorial(4-2))*0.4^2*0.6^2
+print(Pk)
+
+```
+
+b) c?lculo da probabilidade via simula??o ? apresentado a seguir:
+
+```{r Exerc?cio 1b}
+A2<-0 #inicializa a vari?vel de contagem dos eventos
+n<-10000 #n?mero de experimentos
+
+for (i in 1:n) {
+        Adultos<-c(0,0,0,0) #cria vetor de adultos com 0 (1: em casa, 0: fora)
+        sim<-c(runif(1),runif(1),runif(1),runif(1)) #vetor de n?meros aleat?rios 
+        for (j in 1:length(sim))
+                if (sim[j]>0.6) { #probabilidade de estar em casa
+                        Adultos[j]<-1
+                }
+        if (sum(Adultos)==2) { #experimento com 2 adultos em casa
+                A2<-A2+1
+        }
+}
+
+print(A2/n) #calcula a frequ?ncia relativa do experimento
+```
+
+
+## Exerc?cio 2:
+
+A fun??o densidade de probabilidade da distribui??o (pdf) gaussiana ? dada por (10.7), conforme:
+\begin{gather*}
+        f(x) = \frac{1}{\sqrt{2\pi\sigma^2}}\exp[{-\frac{1}{2}(\frac{x-\mu}{\sigma})^2}], x \in [-\infty,\infty]
+\end{gather*}
+
+Para calcular a probabilidade de um intervalo em uma pdf, a solu??o ? dada por (10.4), conforme equa??o:
+\begin{gather*}
+        \Pr(x \in (a,b)) = \int_a^b \rho(x)dx.
+\end{gather*}
+
+Uma aproxima??o num?rica pode ser obtido pela f?rmula a seguir (quanto menor o delta, melhor ? a aproxima??o):
+\begin{gather*}
+        \displaystyle\sum_{n=^L1_/\Delta}^{^L2_/\Delta} \frac{1}{\sqrt{2\pi\sigma^2}}\exp[{-\frac{1}{2}(\frac{n\Delta-\mu}{\sigma})^2}]\Delta
+\end{gather*}
+
+Para o problema em quest?o, com m?dia 7, desvio padr?o unit?rio e evento 5 <= T <= 6, a aproxima??o ? dada por:
+\begin{gather*}
+        \displaystyle\sum_{n=\frac{5}{\Delta}}^{\frac{6}{\Delta}} \frac{1}{\sqrt{2\pi}}\exp[{-\frac{1}{2}(n\Delta-7)^2}]\Delta
+\end{gather*}
+
+A solu??o utilizando R para o c?lculo num?rico deste problema, com um delta=0.0001, ? apresentado a seguir
+
+```{r Exerc?cio 2}
+d<-0.0001 #define o valor de delta
+p<-0 #inicializa a vari?vel probabilidade
+L1<-5/d #calcula o limite inferior
+L2<-6/d #calcula o limite superior
+
+for (n in L1:L2) {
+        p<-p+1/sqrt(2*pi)*exp(-0.5*(n*d-7)^2)*d #calcula a aproxima??o recursivamente
+}
+
+print(p)
+```
+
+
+## Exerc?cio 3:
+
+Para a solu??o do problema, foi criado um vetor com n somas de valores aleat?rios entre 0,1 e calculado as frequ?ncias relativas, conforme c?digo abaixo (para n=10000).
+
+```{r Exerc?cio 3}
+n=10000 #n?mero de experimentos
+
+X <- runif(n,0,1)+runif(n,0,1)
+
+hist(X)
+
+Xa <- sum(X<0.5)/length(X)
+Xb <- sum(X>=0.5 & X<1)/length(X)
+Xc <- sum(X>=1 & X<1.5)/length(X)
+Xd <- sum(X>=1.5 & X<=2)/length(X)
+Xe <- sum(X>2)/length(X)
+
+
+cat("a)",Xa,"\nb)",Xb,"\nc)",Xc,"\nd)",Xd,"\ne)",Xe)
+
+```
+
+
+## Exerc?cio 4:
+
+Para a solu??o do exerc?cio 4 foi criado um c?digo de forma diferente, com um *for* de 1 at? 20 (quantidade de intervalos) em que era subtra?do 0.5 do vetor Y a cada itera??o e verificado a quantidade de experimentos que teria valor negativo, atribuindo o resultado a um vetor auxiliar. 
+
+Cada elemento desse vetor contem a quantidade de experimentos com valor menor do que o limite superior de cada intervalo. 
+**Ex.:** o elemento *Paux[5]* representa a quantidade de experimentos com valor menor do que 2.5, enquanto que o *Paux[4]* representa a quantidade de experimentos com valor menor do que 2. Para achar o vetor *Py*, com a frequ?ncia de cada intervalo, era s? subtrair um elemento do vetor *Paux* de seu elemento anterior, para encontra o "saldo" daquele intervalo. Ao final, o vetor *Py* foi dividido pela quantidade de experimentos, para encontrar a frequ?ncia relativa de cada intervalo.
+
+*Interessante ressaltar a observa??o de que a pdf resultante da soma de distribui??es uniformes tende para uma distribui??o gaussiana. E que quanto maior a soma, mais pr?ximo da gaussiana e menor o desvio padr?o.*
+
+```{r Exerc?cio 4}
+n<-1000000 #numero de experimentos
+Y<-0
+
+for (i in 1:10){
+        Y<-Y+runif(n,0,1)
+}
+
+hist(Y)
+
+Py<-c(1:20)-c(1:20) #inicializando o vetor das probabilidades
+Paux<-Py
+
+for (i in 1:length(Py)) {
+        Y <- Y-0.5 
+        Paux[i]<-sum(Y<0) #experimentos < limite superior do intervalo
+        if (i>1) {
+                Py[i]<-(Paux[i]-Paux[i-1])/n #remove experimentos < limite inferior 
+        }
+        else {
+                Py[i]<-Paux[i]/n #calculando a frequ?ncia relativa
+        }
+}
+
+intervals<-c("[0 0.5)","[0.5 1)","[1 1.5)","[1.5 2)","[2 2.5)",
+             "[2.5 3)","[3 3.5)","[3.5 4)","[4 4.5)","[4.5 5)",
+             "[5 5.5)","[5.5 6)","[6 6.5)","[6.5 7)","[7 7.5)",
+             "[7.5 8)","[8 8.5)","[8.5 9)","[9 9.5)","[9.5 10]")
+
+result<-data.frame(intervals,Py)
+
+print(result)
+
+```
+
+
+## Exerc?cio 5:
+
+Foram feitos c?lculos para o n?mero de Bell de acordo com as duas f?rmulas:
+
+```{r Exerc?cio 5}
+
+N_infty=100 #limite superior do somat?rio
+N_seq=10 #quantidade de n?meros de Bell a calcular
+
+##F?rmula 1:
+Bn <- c(1:N_seq)-c(1:N_seq)
+Bn[1]<-1;
+for (n in 1:(N_seq)) {
+        for (k in 1:N_infty) {
+                Bn[n+1]<-Bn[n+1]+k^n/factorial(k) #i+1 - ?ndice 0 n?o existe no R
+        }
+        Bn[n+1]<-Bn[n+1]/exp(1)
+}
+
+print(toString(Bn[1:10]))
+
+
+##F?rmula 2:
+Bnn <- c(1:N_seq)-c(1:N_seq)
+aux<-Bnn
+
+Bnn[1] <- 1 #inicializa os dois primeiros elementos do vetor / casos especiais
+Bnn[2] <- 1
+
+comb = function(n, x) { #fun??o para an?lise combinat?ria
+        return(factorial(n) / (factorial(x) * factorial(n-x)))
+}
+
+
+for (n in 2:(N_seq)) {
+        aux[1]<-1
+        for (k in 2:n) {
+                aux[k]<-comb(n-1,k-1)*Bnn[k]
+        }
+        Bnn[n+1]<-sum(aux)
+}
+
+print(toString(Bnn[1:10])) #trunca os n?meros e imprimie como string, para melhor visualiza??o
+
+```
+
+Realizando o c?lculo para o espa?o amostral igual a {1,2,3,4}, temos que:
+
+```{r Exerc?cio 5.1}
+print(Bnn[4+1]) #considerando que os n?meros come?am para n=0
+
+```
+
+
+## Exerc?cio 6:
+
+Considerando que cada evento ? um tipo de resultado diferente (A C B B) =! (B B), o c?digo e o resultado das probabilidades de cada evento s?o apresentados a seguir:
+
+```{r Exerc?cio 6}
+n=10000
+eventos=0
+for (i in 1:n) {
+        x=0
+        if (runif(1)<0.5) { #A ganha de B e joga com C
+                x="A" 
+                if (runif(1)<0.5) { #A ganha de C e ? o campe?o
+                        x=paste(x,"A")
+                } else {
+                        x=paste(x,"C") #C ganha de A e joga com B
+                        if (runif(1)<0.5) {
+                                x=paste(x,"C") #C ganha e ? o campe?o
+                        }
+                        else { #B ganha e joga com A
+                                x=paste(x,"B")
+                                if (runif(1)<0.5) { #B ganha e ? o campe?o
+                                        x=paste(x,"B")
+                                } else {
+                                        x=paste(x,"A") #A ganha e ? o campe?o
+                                }
+                        }
+                }
+        } else { #B ganha de A e joga com C
+                x="B"
+                if (runif(1)<0.5) { #B ganha de C e ? o campe?o
+                        x=paste(x,"B")
+                } else {
+                        x=paste(x,"C") #C ganha de B e joga com A
+                        if (runif(1)<0.5) {
+                                x=paste(x,"C") #C ganha e ? o campe?o
+                        }
+                        else { #A ganha e joga com B
+                                x=paste(x,"A")
+                                if (runif(1)<0.5) { #A ganha e ? o campe?o
+                                        x=paste(x,"A")
+                                } else {
+                                        x=paste(x,"B") #B ganha e ? o campe?o
+                                }
+                        }
+                }
+        }
+        eventos[i]=x
+}
+eventos<-data.frame(table(eventos))
+eventos["prob"]<-eventos$Freq/n
+print(eventos)
+```
+
+
+## Exerc?cio 7:
+
+A seguir s?o resolvidos os problemas computacionais do cap?tulo 2 do livro do Kay.
+
+**Exerc?cio 2.1:**
+
+O resultado (3/4 para 0 e 1/4 para 1) era esperado, pois h? 3 combina??es de resultados para os eventos cujo produto ? 0 ({0,0},{0,1},{1,0}), enquanto h? apenas 1 evento cujo produto ? 1 ({1,1})
+
+```{r Exerc?cio 7 2.1}
+n<-100000
+
+X1<-runif(n,0,1)
+X2<-runif(n,0,1)
+
+Y<-round(X1)*round(X2)
+
+Prob1<-sum(Y==1)/length(Y)
+Prob0<-sum(Y==0)/length(Y)
+
+cat("Probability of Y=1",Prob1,"\nProbability of Y=0",Prob0)
+```
+
+
+**Exerc?cio 2.2:**
+
+De forma similar ao Exerc?cio 2.1, h? apenas um evento dos quatro poss?veis que retorna *snake eyes* ({1,1}). Assim, era de se esperar que o resultado fosse 1/4
+
+```{r Exerc?cio 7 2.2}
+n<-100000
+
+X1<-runif(n,0,1)
+X2<-runif(n,0,1)
+
+Y<-round(X1)+round(X2)
+
+snake_eyes<-sum(Y==2)/length(Y)
+
+cat("Probability of snake eyes is:", snake_eyes)
+```
+
+
+**Exerc?cio 2.3:**
+
+O valor verdadeiro para a probabilidade -1 < X < 1 ? de 0.68268.
+Usando o mesmo c?digo do Exerc?cio 2, alterando os valores de mi e dos limites do somat?rios, temos que:
+
+```{r Exerc?cio 7 2.3}
+d<-0.000001 #define o valor de delta
+p<-0 #inicializa a vari?vel probabilidade
+L1<--1/d #calcula o limite inferior
+L2<-1/d #calcula o limite superior
+
+for (n in L1:L2) {
+        p<-p+1/sqrt(2*pi)*exp(-0.5*(n*d)^2)*d 
+}
+
+print(p)
+```
+
+
+**Exerc?cio 2.4:**
+
+Ao comparar a estimativa de PDF para a VA X com a PDF da gaussiana de m?dia 0 e desvio padr?o unit?rio, nota-se que s?o muito semelhantes. Isso refor?a a observa??o feita no Exerc?cio 4, de que a soma de v?rias VAs de distribui??o uniforme tendem a uma VA com distribui??o gaussiana.
+
+```{r Exerc?cio 7 2.4}
+n<-1000000 #n?mero de experimentos
+X<-0
+
+for (i in 1:12) {
+        X<-X+(runif(n,0,1)-0.5)
+}
+
+hist(X, probability=TRUE, ylim=c(0,0.4))
+lines(density(X),col="red")
+curve(1/sqrt(2*pi)*exp(-1/2*x^2),from=-4, to=4)
+```
+
+
+**Exerc?cio 2.5:**
+
+Os valores mais prov?veis s?o os ao redor de zero (negativo e positivo):
+
+```{r Exerc?cio 7 2.5}
+n<-1000000 #n?mero de experimentos
+X<-runif(n,0,1)-runif(n,0,1)
+
+hist(X,probability=TRUE)
+```
+
+
+**Exerc?cio 2.6:**
+
+Os valores mais prov?veis s?o os pr?ximos a 0 (positivos):
+
+```{r Exerc?cio 7 2.6}
+n<-1000000 #n?mero de experimentos
+X<-runif(n,0,1)*runif(n,0,1)
+
+hist(X,probability=TRUE)
+```
+
+
+**Exerc?cio 2.7:**
+
+O resultado, conforme esperado, ? pr?ximo a p1 para X1, p2 para X2 e p3 para X3.
+```{r Exerc?cio 7 2.7}
+n<-10000
+r<-runif(n,0,1)
+x<-0
+
+for (i in 1:n) {
+        if (r[i]<0.1) {
+                x[i]<-1
+        } else if (r[i]<0.3) {
+                x[i]<-2
+        } else {
+                x[i]<-3
+        }
+}
+
+probs<-c(sum(x==1)/n,sum(x==2)/n,sum(x==3)/n)
+cat("Prob X=1 is",probs[1],"\nProb X=2 is",probs[2],"\nProb X=3 is",probs[3])
+
+```
+
+
+**Exerc?cio 2.8:**
+
+Para uma distribui??o uniforme, o valor verdadeiro ? a m?dia entre os limites da VA.  No caso do problema, para uma VA entre 0 e 1, o valor verdadeiro ? 0.5. O resultado da simula??o foi muito pr?ximo:
+
+```{r Exerc?cio 7 2.8}
+n<-10000
+x<-runif(n,0,1)
+print(mean(x))
+```
+
+
+**Exerc?cio 2.9:**
+
+Considerando X uma VA gaussiana, com m?dia 0 e desvio padr?o unit?tio, X + 1 ter? um valor verdadeiro da m?dia igual a 1. O resultado da simula??o foi um valor muito pr?ximo:
+
+```{r Exerc?cio 7 2.9}
+n<-10000
+x<-rnorm(n,0,1)+1
+print(mean(x))
+```
+
+
+**Exerc?cio 2.10:**
+
+Considerando X uma VA gaussiana, com m?dia 0 e desvio padr?o unit?tio, X^2 ter? um valor m?dio igual a 1, sendo os valores pr?ximos a 0 os mais prov?veis e todos valores positivos.
+
+```{r Exerc?cio 7 2.10}
+n<-10000
+x<-rnorm(n,0,1)^2
+print(mean(x))
+```
+
+
+**Exerc?cio 2.11:**
+
+Considerando X uma VA uniforme, entre 0 e 1, 2*x dever? ter m?dia 1. O resultado da simula??a ? muito pr?ximo disso
+
+```{r Exerc?cio 7 2.11}
+n<-10000
+x<-runif(n,0,1)*2
+print(mean(x))
+```
+
+
+**Exerc?cio 2.12:**
+
+Se considerarmos o desvio padr?o como uma medida para o tamanho do intervalo de valores prov?veis, a conjectura do problema ? falsa. O desvio padr?o de Y ? a raiz quadrada da soma dos quadrados dos desvios padr?es de X1 e X2, conforme simula??o. Al?m disso, pelos histogramas apresentados, percebe-se uma distribui??o mais espalhada para Y.
+
+```{r Exerc?cio 7 2.12}
+n<-1000000
+X1<-rnorm(n,0,1)
+X2<-rnorm(n,0,1)
+Y<-X1-X2
+cat("Desvio padr?o de X1=X2 ?", sd(X1), "\nDesvio padr?o de Y ?", sd(Y))
+hist(X1,probability = TRUE,xlim=c(-4,4),ylim=c(0,0.4))
+hist(Y,probability = TRUE,xlim=c(-4,4),ylim=c(0,0.4))
+```
+
+
+**Exerc?cio 2.13:**
+
+A dist?ncia m?dia, calculada por simulua??o, ? de 1.25:
+
+```{r Exerc?cio 7 2.13}
+n<-100000
+X<-rnorm(n,0,1)
+Y<-rnorm(n,0,1)
+dist<-sqrt(X^2+Y^2)
+print(mean(dist))
+```
+
+
+**Exerc?cio 2.14:**
+
+Pelos resultados da simula??o abaixo, a conjectura n?o ? verdade. 
+
+```{r Exerc?cio 7 2.14}
+n<-100000
+U<-runif(n,0,1)
+X<-sqrt(U)
+cat("Mean of Sqrt(U) is", mean(X), "\nSqrt(mean(U)) is",sqrt(mean(U)))
+```
+
+
+**Exerc?cio 2.15:**
+
+De acordo com o diagrama plotado, e com a correla??o entre as vari?veis Y1 e Y2, ? poss?vel determinar o valor aproximado de Y2 em fun??o de Y1.
+Para o caso de Y1, pelo diagrama temos que Y2 ? aproximadamente 1, caso Y1 tamb?m seja 1.
+
+```{r Exerc?cio 7 2.15}
+n<-1000
+X1<-rnorm(n,0,1)
+X2<-rnorm(n,0,1)
+Y1<-X1+0.1*X2
+Y2<-X1+0.2*X2
+cor(Y1,Y2)
+plot(Y1,Y2,panel.first=grid())
+```
+
+
+**Exerc?cio 2.16:**
+
+A combina??o linear de X pode ser dada por:
+
+\begin{gather*}
+        X = U_1e_1 +U_2e_2
+\end{gather*}
+
+Os vetores e1 e e2 delimitam o paralelograma encontrado pelo diagrama de dispers?o, explicando o formato do mesmo.
+
+```{r Exerc?cio 7 2.16}
+n<-10000
+U1<-runif(n,0,1)
+U2<-runif(n,0,1)
+X1<-U1
+X2<-U1+U2
+plot(X1,X2,panel.first=grid())
+```

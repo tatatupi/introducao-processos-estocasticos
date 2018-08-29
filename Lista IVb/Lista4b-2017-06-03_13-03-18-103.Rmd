@@ -1,0 +1,262 @@
+---
+title: "title"
+author: "Taiguara Melo TupinambÃ¡s"
+date: 'Entrega: 06 de maio de 2017'
+output:
+  html_document: default
+  pdf_document: default
+---
+
+## Exercício 4
+
+#15.5
+
+\begin{gather} 
+        X_N=X_{N-1}+U_N\\
+        X_N=U_1+U_2+...+U_N\\
+        X_N=\sum_{i=1}^{N}U_i\\
+\end{gather}
+
+Para avaliar a convergência, podemos analisar a desigualdade de Chebyshev:
+
+\begin{gather} 
+        P[|\bar{X}_N-E_X[X]|>\epsilon]\leq \frac{var(\bar{X}_N)}{\epsilon^2}
+\end{gather}
+
+Mas, como:
+
+\begin{gather} 
+        var(\bar{X}_N)=\sum_{i=1}^{N}var(U_i)=\sum_{i=1}^{N}\frac{(1+1)^2}{12}=\sum_{i=1}^{N}\frac{1}{3}\\
+        \\
+        \lim_{N \rightarrow \infty}var(\bar{X}_N) \rightarrow \infty
+\end{gather}
+
+$X_N$ não irá convergir.
+        
+#15.6
+
+Considerando que as variáveis $X_i$ para $i=1,2..,N$ são independentes e idênticamente distribuídas, temos que:
+
+\begin{gather} 
+        X_N=\frac{1}{N}\sum_{i=1}^NX_i^2\\
+        E_X[X_N^2]=\frac{1}{N}\sum_{i=1}^NE_X[X^2]=E_X[X^2]\\
+        \\
+        var(X_N^2)=E_X[X^4]-E_X^2[X^2]
+\end{gather}
+
+Considerando que $E_X[X_N^2]$ existe, para que o estimador convirja, é necessário que $var(X_N^2)<\infty$
+
+
+#15.7
+
+\begin{gather} 
+        X_N=\frac{1}{\sqrt{N}}\sum_{i=1}^NX_i\\
+        \\
+        var(X_N)=var(\frac{1}{\sqrt{N}}\sum_{i=1}^NX_i)=\frac{1}{N}var(\sum_{i=1}^NX_i)=var(X)
+\end{gather}
+
+Como $var(X)\neq 0$, para $N\rightarrow \infty$, a variável aleatória não irá convergir
+
+
+#15.8
+
+Temos que:
+
+Y_N=\begin{cases} 
+        \frac{X_N}{\sqrt{N}}+1, \ se \ \frac{X_N}{\sqrt{N}}>0.1\\
+        \frac{X_N}{\sqrt{N}},\ se \ \frac{X_N}{\sqrt{N}}\leq 0.1
+\end{cases}
+
+Logo:
+
+\begin{gather} 
+        P[|Y_N|>\epsilon]=P[|{\frac{X_N}{\sqrt{N}}+1}|>\epsilon]P[\frac{X_N}{\sqrt{N}}>0.1]+P[|\frac{X_N}{\sqrt{N}}|>\epsilon]P[\frac{X_N}{\sqrt{N}}\leq 0.1]\\
+        P[|Y_N|>\epsilon]=(1-P[-\epsilon <{\frac{X_N}{\sqrt{N}}+1}<\epsilon])P[\frac{X_N}{\sqrt{N}}>0.1]+(1+P[-\epsilon<\frac{X_N}{\sqrt{N}}<\epsilon])P[\frac{X_N}{\sqrt{N}}\leq 0.1]\\
+\end{gather}
+
+Sabendo que:
+
+\begin{gather} 
+        \frac{X_N}{\sqrt{N}} \sim N(0,\frac{1}{\sqrt{N}})\\
+        \frac{X_N}{\sqrt{N}}+1 \sim N(1,\frac{1}{\sqrt{N}})
+\end{gather}
+
+
+Temos:
+
+\begin{gather} 
+        P[|Y_N|>\epsilon]=(1-[Q(\frac{-\epsilon-1}{\sqrt{\frac{1}{N}}})-Q(\frac{\epsilon-1}{\sqrt{\frac{1}{N}}})])Q(\frac{0.1}{\sqrt{\frac{1}{N}}})+
+                          (1-[Q(\frac{-\epsilon}{\sqrt{\frac{1}{N}}})-Q(\frac{\epsilon}{\sqrt{\frac{1}{N}}})])(1-Q(\frac{0.1}{\sqrt{\frac{1}{N}}}))
+\end{gather}
+
+
+Como $\frac{1}{\sqrt{\frac{1}{N}}}=\sqrt{N}$, quando $N\rightarrow \infty$, ambos os termos tendem a $0$ e, desta forma, $P[|Y_N|>\epsilon] \rightarrow 0$, C.Q.D..
+
+
+```{r 15 8}
+set.seed(1)
+
+N<-200
+R<-10
+
+y<-matrix(0,R,N)
+
+for (j in 1:R) {
+        for (i in 1:N) {
+                x<-rnorm(n=1)/sqrt(i)
+                if (x<0.2) {
+                        y[j,i]<-x
+                } else {
+                        y[j,i]<-x+1
+                }
+        }
+}
+
+par(mfrow=c(2,2))
+
+
+for (i in 1:4) {
+        plot(c(1:N),type="l",y[i,])
+        abline(h=0.2);abline(h=-0.2)
+}
+
+``` 
+
+Como podemos ver, para as 4 realizações, todas convergiram para N>100. No entanto, essa conclusão não pode ser generalizada para qualquer realização, conforme resultado da simulação, envolvendo 10 realizações.
+
+O que é possível concluir é que a probabilidade de convergência é alta, para valores grandes de N.
+
+
+```{r 15 8a}
+
+plot(c(1:N),type="l",y[1,],xlab="N",ylab="Y_N",xlim=c(1, N),ylim=c(-1.5,2))
+abline(h=0.2);abline(h=-0.2)
+
+for (j in 2:R) {
+        par(new=T)
+        plot(y[j,],type='l',xlab="",ylab="",axes=F,xlim=c(1, N),ylim=c(-1.5,2))
+}
+
+``` 
+
+#Exercício 15.9
+
+Seja $S_N=\sum_{i=1}^{100}X_i$, em que $X_i$ é a VA resistência. De acordo com o Teorema do Limite Central, $S_N$ tem distribuição aproximadamente normal, com $E[S_N]=NE[X]=1000$ e $var(S_N)=Nvar(X_i)=200$.
+
+Desta forma, a probabilidade da resitência dos 100 resistores conectados em série ser superior a 1030 é dada por:
+
+
+\begin{gather} 
+        P[S_N>1030]\approx Q(\frac{1030-1000}{\sqrt(200)})=0.0169
+\end{gather}
+
+
+#Exercício 15.12
+
+A PDF de Y será aproximadamente normal, com média $E[Y]$ e variância $var(Y)$.
+
+\begin{gather} 
+        E[Y]=NE[X^2]=100(var(X)+E^2[X])=100.24=2400\\
+        \\
+        var(Y)=100.var(X^2)=100(E[X^2]-E^2[X^2])\\
+        \\
+        E[X^2]=24
+\end{gather}
+
+
+Para encontrar $E[X^4]$, define-se $Z\sim N(0,8)$, tal que $X=Z-4$. Desta forma,$E[X^4]=E[(Z-4)^4]$.
+
+Desenvolvendo $E[(Z-4)^4]$ e sabendo que os momentos de ordem ímpar da pdf gaussiana com média 0 é igual a 0 e que o valor esperado de uma constante é igual a própria constante, temos que:
+
+\begin{gather} 
+        E[X^4]=E[(Z-4)^4=]=E[Z^4]+6E[V^2](-4)^2+(-4)^2=3var(Z)^2+96var(V)+256=1216
+\end{gather}
+
+
+Logo, $var(X^2)=100(1216 -576)=640$, $var(Y)=100var(x^2)=6400$ e $Y\sim N(2400,6400)$
+
+
+#Exercício 15.14
+
+A PDF de Y será aproximadamente normal, com média $E[Y]=10E[X]$ e variância $var(Y)=10var(X)$.
+
+\begin{gather} 
+        E[X]=\int_\infty^\infty xp(x)dx=\int_0^1 2x^2dx=\frac{2}{3}\\
+        E[X^2]=\int_\infty^\infty x^2p(x)dx=\int_0^1 2x^3dx=\frac{1}{2}\\
+        var(X)=E[X^2]-E^2[X]=\frac{1}{2}-(\frac{2}{3})^2=\frac{1}{18}
+\end{gather}
+
+Logo, $Y \sim N(\frac{20}{3},\frac{10}{18})$ e:
+
+\begin{gather} 
+        P(Y>7)=Q(\frac{7-\frac{20}{3}}{\sqrt(\frac{5}{9})})=0.3274
+\end{gather}
+
+
+
+#Exercício 15.17
+
+A distribuição chi-quadrado é um caso especial da pdf gamma $\Gamma(\alpha,\beta)$, com $\alpha=\frac{v}{2}$ e $\beta=2\sigma^2$, em que $v$ é a quantidade de graus de liberdade (igual a $N$ nesse caso) e $\sigma$ o desvio padrão da distribuição normal que derivou a chi-quadrado que, no caso da distribuição normalizada, equivale a 1.
+
+Ou seja, $Y_N \sim \Gamma(\frac{N}{2},2)$ e sua função característica é dada por:
+
+\begin{gather} 
+        \Phi_{Y_N}(w)=\frac{1}{(1-j\omega\beta)^\alpha}
+\end{gather}
+
+Substituindo $\alpha=\frac{N}{2}$ e $\beta=2$, temos que:
+
+\begin{gather} 
+        \Phi_{Y_N}(w)=\frac{1}{(1-2j\omega)^\frac{N}{2}}
+\end{gather}
+
+
+Definindo $Z_N=\frac{Y_N-E[Y_N]}{\sqrt{var(Y_N)}}$ e sabendo que $E[Y_N]=N$ e $var(Y_N)=2N$, temos que
+
+\begin{gather} 
+        Z_N=\frac{Y_N-N}{\sqrt{2N}}
+\end{gather}
+
+
+A função característica de $Z_N$ é dada por:
+
+\begin{gather} 
+        \Phi_{Z_N}(w)=E[e^{j\omega Z_N}]=E_{Y_N}[e^{j\omega \frac{Y_N-N}{\sqrt{2N}}}]\\
+\end{gather}
+
+Mas, separando $E_{Y_N}[e^{j\omega \frac{Y_N-N}{\sqrt{2N}}}]$ em seus dois termos, temos que:
+
+\begin{gather} 
+        E_{Y_N}[e^{j\frac{\omega}{\sqrt(2N)}Y_N}]=\Phi_{Y_N}(\frac{\omega}{\sqrt(2N)})=\frac{1}{(1-2j\frac{\omega}{\sqrt{2N}})^\frac{N}{2}}\\ \\ 
+        E_{Y_N}[e^{-j\omega \frac{N}{\sqrt{2N}}}]=e^{\frac{-j\omega N}{\sqrt{2N}}}=e^{-j\omega \sqrt{\frac{N^2}{2N}}}=e^{-j\omega \sqrt{\frac{N}{2}}}
+\end{gather}
+
+Logo:
+
+\begin{gather} 
+        \Phi_{Z_N}=\frac{e^{-j\omega \sqrt{\frac{N}{2}}}}{(1-2j\frac{\omega}{\sqrt{2N}})^\frac{N}{2}}
+\end{gather}
+
+Tirando o logaritmo de ambos os lados da equação, temos que:
+
+\begin{gather} 
+        \ln \Phi_{Z_N}=-j\omega \sqrt{\frac{N}{2}}-\frac{N}{2} \ln {(1-2j\frac{\omega}{\sqrt{2N}})}
+\end{gather}
+
+
+Com $N\rightarrow \infty$ e aplicando a aproximação dada no exercício, temos:
+
+\begin{gather} 
+        \ln \Phi_{Z_N}=-j\omega \sqrt{\frac{N}{2}}-\frac{N}{2}(-2j\frac{\omega}{\sqrt{2N}}-\frac{1}{2}(2j\frac{\omega}{\sqrt{2N}})^2)\\ \\
+        \ln \Phi_{Z_N}= -j\omega \sqrt{\frac{N}{2}}+j\omega \sqrt{\frac{N}{2}}+\frac{N}{4}(-\frac{2}{N}\omega^2)=-\frac{\omega^2}{2}
+\end{gather}
+
+Logo, $\Phi_{Z_N}=e^{-\frac{\omega^2}{2}}$ e, consequentemnete, $Z_N \sim N(0,1)$, C.Q.D..
+
+
+#Exercício 15.24
+
+
+
+
+

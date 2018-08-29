@@ -1,0 +1,80 @@
+---
+title: "Lista de Exercicios IPE#5"
+author: "Taiguara Melo Tupinambas"
+date: 'Entrega: 23 de junho de 2017'
+output:
+  html_document:
+    fig_caption: yes
+    fig_height: 4
+    fig_width: 6
+  pdf_document:
+    fig_caption: yes
+    fig_height: 8
+    fig_width: 6
+---
+
+# Exercício 1
+
+A distribuição uniforme pode ser escrita com $U(0,\theta)=\frac{1}{\theta}\Big (u(\theta-x)-u(x)\Big)$, em que $u(\theta-x)$ é a função degrau. Ou seja, a distribuição tem probabilidade $1\theta$ no intervalo de $0$ a $\theta$ e $0$ fora dele.
+
+Desta forma, o estimador de máxima verossimilhança é calculado da seguinte forma:
+
+\begin{gather} 
+        \frac{dL(\theta|X)}{d \theta}=\frac{d\prod \frac{1}{\theta}\Big (u(\theta-x_i)-u(x_i)\Big )}{d\theta}=0
+\end{gather}
+
+Como $x_i$ está no intervalo $[0,\theta]$, a função tem sua derivada igual a 0 apenas para os valores em que $x_i=0$ e $x_i=\theta$.
+
+Logo, o estimador de Máxima Verossimilhança de $\theta$ é dado por $max(X_n)$
+
+O estimador de $\theta$ pelo Método dos Momentos da função uniforme é dado por:
+
+\begin{gather} 
+        E[X]=\frac{\theta}{2}\\
+        \hat \theta_{MM}=\frac{2}{n}\sum_nx_i
+\end{gather}
+
+Simulando para um $\theta=3$, temos que ambos estimadores convergem a medida que a quantidade de amostras aumenta
+
+```{r 1b}
+
+set.seed(1)
+
+theta<-3
+N<-1000
+
+Theta_MV<-numeric(N)
+Theta_MM<-numeric(N)
+
+for (j in 1:N) {
+        x<-runif(j,max=theta)
+
+        # Máxima Verossimilhança
+        Theta_MV[j]<-max(x)
+
+        # Método dos Momentos
+        Theta_MM[j]<-2*mean(x)
+}
+
+par(mfrow=c(2,1))
+
+plot(Theta_MV,type="l",ylab="Theta Estimado",xlab="N",main="Máxima Verossimilhança")
+abline(h=theta)
+plot(Theta_MM,type="l",ylab="Theta Estimado",,xlab="N",main="Método dos Momentos")
+abline(h=theta)
+
+```
+
+
+# Exercício 2
+
+O estimador de $\theta$ pelo Método dos Momentos da função uniforme é a mesma do exercício 1.
+
+Porém, no caso da Máxima Verossimilhança, como $X_n$ está dentro do intervalo aberto $(0,\theta)$, não há valor de $x_i$ cuja derivada da função de verossimilhança $\frac{dL(\theta|X)}{d\theta}=0$, logo o estimador é indeterminado.
+
+
+# Exercício 2
+
+
+
+

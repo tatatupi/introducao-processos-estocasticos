@@ -1,0 +1,206 @@
+---
+title: 'Lista de Exercícios IPE #2'
+5thor: "Taiguara Melo Tupinambás"
+date: 'Entrega: 11 de abril de 2017'
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+As 43a seções, equações, figuras, exemplos e exercícios são do livro *Intuitive Probability and Random Processes using MATLAB* de Stephen M. Kay, Springer, 2006.
+
+## Exercício 1:  
+
+O espaço de probabilidade é dado pela tripla (${\Omega}$,F,P), formada por um conjunto ${\Omega}$ , uma ${\sigma}$-álgebra F em ${\Omega}$  e uma medida positiva P nessa ${\sigma}$-álgebra tal que P(${\Omega}$) = 1. 
+
+O **espaço amostral ${\Omega}$** é dado por:
+
+${\Omega}$ = {todas as palavras formadas com 3 letras de um alfabeto com **n** letras}
+
+___
+
+O **conjunto F ${\sigma}$-álgebra** é formado pelos seguintes eventos:
+
+C~1~=${\varnothing}$ 
+
+C~2~=${\Omega}$
+
+C~3~=A - palavras que começam com **s** {(s,x,x)}
+
+C~4~=A^c^ - palavras que não começam com **s** {(x-s,x,x)}
+
+C~5~=B - palavras que tem **s** no meio {(x,s,x)}
+
+C~6~=B^c^ - palavras que não tem **s** no meio {(x,x-s,x)}
+
+C~7~=C - palavras que tem exatamente duas letras iguais {(a,a,x-a),(x-a,a,a),(a,x-a,a)}
+
+C~8~=C^c^ - palavras que tem todas as três letras iguais ou todas diferentes {(a,a,a),(a,b,c)}
+
+C~9~=A${\cup}$B - palavras que começam com a letra **s** e/ou tem a letra **s** no meio {(s,x-s,x),(x-s,s,x),(s,s,x)}
+
+C~10~=A${\cup}$C - palavras que começam com a letra **s** e/ou tem exatamente duas letras iguais {(s,x,x),(a-s,a-s,x),(a-s,x,a-s),(x-s,a,a)}
+
+C~11~=B${\cup}$C - palavras que tem a letra **s** no meio e/ou tem exatamente duas letras iguais {(x,s,x),(a-s,a-s,x),(x,a-s,a-s),(a,x-s,a)}
+
+C~12~=A^c^${\cup}$B^c^ - palavras que não começam com **s** e/ou não tem **s** no meio {(x-s,x-s,x),(s,x-s,x),(x-s,s,x)}
+
+C~13~=A^c^${\cup}$C^c^ - palavras que não começam com **s** e/ou tem todas letras iguais ou diferentes {(x-s,x,x),(s,s,s),(s,a-s,b-s)}
+
+C~14~=B^c^${\cup}$C^c^ - palavras que não tem **s** no meio e/ou tem todas letras iguais ou diferentes {(x,x-s,x),(s,s,s),(a-s,s,b-s)}
+
+C~15~=A${\cup}$B^c^ - palavras que começam com **s** e/ou que não tem **s** no meio {(s,x,x),(x-s,x-s,x)}
+
+C~16~=A${\cup}$C^c^ - palavras que  começam com **s** e/ou que 
+
+C~17~=B${\cup}$A^c^ - palavras que 
+
+C~18~=B${\cup}$C^c^ - palavras que 
+
+C~19~=C${\cup}$A^c^ - palavras que 
+
+C~20~=C${\cup}$B^c^ - palavras que 
+
+C~21~=A^c^${\cup}$C^c^ - palavras que 
+
+C~21~=B^c^${\cup}$C^c^ - palavras que
+
+C~22~=B^c^${\cup}$C^c^ - palavras que
+
+C~23~=A${\cup}$B${\cup}$C - palavras que começam com a letra **s** e/ou tem a letra **s** no meio e/ou tem exatamente duas letras iguais {(s,x-s,x),(x-s,s,x),(s,s,x),(a-s,a-s,x),(x-s,a-s,a-s),(a-s,x-s,a-s)}
+
+C~24~=A^c^${\cup}$B^c^${\cup}$C^c^ - palavras que não tem **s** no início e/ou no meio e/ou tem todas letras iguais ou diferentes {(x-s,x-s,x),(s,x-s,x),(x-s,s,x),(s,s,s)}       
+
+C~25~=A${\cup}$B${\cup}$C^c^ - palavras que
+
+C~26~=A${\cup}$B^c^${\cup}$C^c^ - palavras que
+
+C~27~=B${\cup}$B^c^${\cup}$C^c^ - palavras que
+
+C~28~=B${\cup}$B^c^${\cup}$C^c^ - palavras que
+
+C~29~=A^c^${\cup}$B${\cup}$C^c^ - palavras que 
+
+C~30~=A^c^${\cup}$B${\cup}$C^c^ - palavras que 
+
+
+
+*Obs.: dentro dos parênteses foram representados todos os elementos com a seguinte simbologia: **x** significa qualquer letra do alfabeto, **x-s** significa qualquer letra menos **s**, **a** significa uma letra específica, **a-s** ou **b-s** uma letra específica que não seja **s**, **a b c** letras diferentes entre si*
+
+***
+
+E as **medidas de probabilidade P** são:
+
+P(C~1~)=0
+
+P(C~2~)=1
+
+P(C~3~)=1/n
+
+P(C~4~)=1-1/n
+
+P(C~5~)=1/n
+
+P(C~6~)=1-1/n   
+
+P(C~7~)=
+
+P(C~8~)=
+
+P(C~9~)=
+
+P(C~10~)=
+
+P(C~11~)=
+
+P(C~12~)=
+
+P(C~13~)=
+
+P(C~14~)=
+
+P(C~15~)=
+
+P(C~16~)=
+
+
+
+
+
+
+
+P 
+
+```{r Exercício 1}
+
+
+```
+
+
+## Exercício 2:
+
+
+
+\begin{gather*}
+        f(x) = \frac{1}{\sqrt{2\pi\sigma^2}}\exp[{-\frac{1}{2}(\frac{x-\mu}{\sigma})^2}], x \in [-\infty,\infty]
+\end{gather*}
+
+Para calcular a probabilidade de um intervalo em uma pdf, a solução é dada por (10.4), conforme equação:
+\begin{gather*}
+        \Pr(x \in (a,b)) = \int_a^b \rho(x)dx.
+\end{gather*}
+
+Uma aproximação numérica pode ser obtido pela fórmula a seguir (quanto menor o delta, melhor é a aproximação):
+\begin{gather*}
+        \displaystyle\sum_{n=^L1_/\Delta}^{^L2_/\Delta} \frac{1}{\sqrt{2\pi\sigma^2}}\exp[{-\frac{1}{2}(\frac{n\Delta-\mu}{\sigma})^2}]\Delta
+\end{gather*}
+
+Para o problema em questão, com média 7, desvio padrão unitário e evento 5 <= T <= 6, a aproximação é dada por:
+\begin{gather*}
+        \displaystyle\sum_{n=\frac{5}{\Delta}}^{\frac{6}{\Delta}} \frac{1}{\sqrt{2\pi}}\exp[{-\frac{1}{2}(n\Delta-7)^2}]\Delta
+\end{gather*}
+
+
+```{r Exercício 2}
+
+
+```
+
+
+## Exercício 3:
+
+
+
+```{r Exercício 3}
+
+
+
+```
+
+
+## Exercício 4:
+
+
+
+```{r Exercício 4}
+
+
+
+```
+
+
+## Exercício 5:
+
+
+
+```{r Exercício 5}
+
+
+
+```
+
+
